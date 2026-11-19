@@ -1,0 +1,11 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "packages": [
+    {"name": "requests", "versionInfo": "2.19.0",
+     "externalRefs": [
+       {"referenceCategory": "PACKAGE-MANAGER", "referenceType": "purl",
+        "referenceLocator": "pkg:pypi/requests@2.19.0"}
+     ]},
+    {"name": "no-purl-package", "versionInfo": "1.0"}
+  ]
+}
