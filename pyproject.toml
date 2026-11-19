@@ -1,0 +1,16 @@
+[project]
+name = "exposureintel"
+version = "0.1.0"
+description = "Rank SBOM vulnerabilities by real-world exploitation risk"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+
+[project.scripts]
+exposureintel = "exposureintel.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["exposureintel*"]
+
+[tool.ruff]
+line-length = 100

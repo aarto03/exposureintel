@@ -221,3 +221,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific
+.venv/
+*.sqlite
+*.db
+.cache/
+reports/
+.env
