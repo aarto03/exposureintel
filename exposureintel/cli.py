@@ -2,8 +2,27 @@ import argparse
 import logging
 import sys
 
-from exposureintel.enrich import Cache, OsvError, default_cache_path, find_vulnerabilities
+from exposureintel.enrich import (
+    Cache,
+    Intel,
+    OsvError,
+    default_cache_path,
+    enrich_vulnerabilities,
+    find_vulnerabilities,
+)
 from exposureintel.ingest import IngestError, load_components
+
+
+def describe(intel: Intel) -> str:
+    parts = []
+    if intel.in_kev:
+        parts.append("KEV, ransomware use" if intel.kev_ransomware else "KEV")
+    if intel.epss is not None:
+        text = f"EPSS {intel.epss:.3f}"
+        if intel.epss_percentile is not None:
+            text += f" (p{intel.epss_percentile * 100:.0f})"
+        parts.append(text)
+    return f"  [{'; '.join(parts)}]" if parts else ""
 
 
 def main() -> None:
@@ -20,6 +39,10 @@ def main() -> None:
         with Cache(args.cache_path or default_cache_path()) as cache:
             result = find_vulnerabilities(
                 components, cache, offline=args.offline, refresh=args.refresh
+            )
+            all_vulns = [v for vulns in result.vulns.values() for v in vulns]
+            intel = enrich_vulnerabilities(
+                all_vulns, cache, offline=args.offline, refresh=args.refresh
             )
     except IngestError as exc:
         print(f"error: {exc}", file=sys.stderr)
@@ -38,9 +61,12 @@ def main() -> None:
         for v in vulns:
             fixed = ", ".join(v.fixed_versions) or "no fix listed"
             cves = f" ({', '.join(v.cve_ids)})" if v.cve_ids else ""
-            print(f"      {v.id}{cves}  fixed in: {fixed}")
+            tags = describe(intel.intel.get(v.id, Intel()))
+            print(f"      {v.id}{cves}  fixed in: {fixed}{tags}")
     if result.unchecked:
         print(f"\n{len(result.unchecked)} component(s) could not be checked offline.")
+    for warning in intel.warnings:
+        print(f"warning: {warning}", file=sys.stderr)
 
 
 if __name__ == "__main__":
