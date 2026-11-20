@@ -229,3 +229,34 @@ __marimo__/
 .cache/
 reports/
 .env
+
+# Python & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.conda/
+
+# Jupyter / VS Code
+.ipynb_checkpoints/
+.vscode/
+
+# Large raw / processed tabular data files
+data/raw/*.csv
+data/processed/*.csv
+*.csv
+*.xlsx
+
+# Large geospatial / boundary files (shapefiles & GeoJSON)
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.geojson
+
+# Optional: ignore large HTML maps if desired
+# outputs/figures/*.html
